@@ -31,8 +31,10 @@ Kho lưu trữ (repository) này dùng để ghi lại toàn bộ quá trình h�
 ---
 
 ### 🗓️ Ngày 17/09/2026
-> **Nội dung:** Thực hiện các phép toán đại số tuyến tính, thống kê dữ liệu, cơ chế Autograd và Gradient Descent.  
-> **Commit:** `Hoan thanh bai 8 va tham khao bai 9 ngay 17/9/26` (`461a4c2`)
+> **Nội dung:** Thực hiện các phép toán đại số tuyến tính, thống kê dữ liệu, cơ chế Autograd và hoàn thành trọn vẹn thuật toán Gradient Descent.  
+> **Commits:** 
+> * `461a4c2`: `Hoan thanh bai 8 va tham khao bai 9 ngay 17/9/26`
+> * `b92ffb8`: `hoan thanh loi giai bai 9 ngay 17/9`
 
 * **Bài 6: Các phép toán trên Tensor & Nhân ma trận**
   * Phân biệt rõ sự khác nhau giữa:
@@ -51,9 +53,15 @@ Kho lưu trữ (repository) này dùng để ghi lại toàn bộ quá trình h�
     * Hàm số $y = x^2$ tại $x = 3.6$ ($y' = 2x = 7.2$).
     * Hàm đa thức $y = 3x^2 + 2x + 1$ tại $x = 3.6$ ($y' = 6x + 2 = 23.6$).
 * **Bài 9: Gradient Descent tìm hệ số đa thức**
-  * Khởi tạo tập dữ liệu dựa trên đa thức bậc 2 ($y = ax^2 + bx + c$).
-  * Xây dựng ma trận đặc trưng $X$ và vector trọng số cần học $w$ (`requires_grad=True`).
-  * Sử dụng thuật toán tối ưu `torch.optim.NAdam` và hàm mất mát Mean Squared Error (MSE) qua 1000 epochs để hội tụ về bộ trọng số chính xác.
+  * **Mục tiêu:** Tìm lại bộ 3 hệ số `[1, 2, 3]` của đa thức mục tiêu $y = 1x^2 + 2x + 3$.
+  * **Kết quả học:**
+    * Hệ số khởi tạo ban đầu (ngẫu nhiên): `[-0.2870, 0.1926, 0.9336]`
+    * Hệ số học được sau 1000 epochs: `[1.0026, 2.0069, 2.8255]`
+    * **Nhận xét:** Các hệ số đã hội tụ cực kỳ sát với giá trị thực tế `[1, 2, 3]` ($1.0026 \approx 1$, $2.0069 \approx 2$, $2.8255 \approx 3$).
+  * **Vai trò bộ ba câu lệnh huấn luyện:**
+    * `optimizer.zero_grad()`: Xóa sạch gradient cũ về 0 ở đầu mỗi epoch, ngăn ngừa hiện tượng cộng dồn gradient sai lệch trong PyTorch.
+    * `mse.backward()`: Lan truyền ngược (Backpropagation) để tính toán đạo hàm riêng của hàm mất mát theo từng trọng số $w$ và ghi nhận vào `w.grad`.
+    * `optimizer.step()`: Cập nhật giá trị trọng số $w$ theo hướng ngược chiều gradient dựa trên thuật toán tối ưu NAdam để giảm thiểu sai số.
 
 ---
 
