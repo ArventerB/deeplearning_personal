@@ -63,6 +63,34 @@ Kho lưu trữ (repository) này dùng để ghi lại toàn bộ quá trình h�
     * `mse.backward()`: Lan truyền ngược (Backpropagation) để tính toán đạo hàm riêng của hàm mất mát theo từng trọng số $w$ và ghi nhận vào `w.grad`.
     * `optimizer.step()`: Cập nhật giá trị trọng số $w$ theo hướng ngược chiều gradient dựa trên thuật toán tối ưu NAdam để giảm thiểu sai số.
 
+### 🗓️ Ngày 18/09/2026
+> **Nội dung:** Giải hệ phương trình tuyến tính bằng Autograd, khảo sát nghiệm vô số, thực hành tổng hợp các thao tác Tensor và khôi phục hệ số đa thức bậc 2 bằng Gradient Descent.  
+
+* **Bài 10: Giải hệ phương trình bằng Autograd**
+  * **Giải hệ phương trình 4 ẩn:** $A + B = 9$, $C - D = 1$, $A + C = 8$, $B - D = 2$.
+  * **Kiểm tra nghiệm:**
+    * Bộ nghiệm tối ưu thu được: $A \approx 4.4299$, $B \approx 4.5701$, $C \approx 3.5701$, $D \approx 2.5701$.
+    * Thay vào 4 phương trình đều thỏa mãn với tổng sai số bình phương cực nhỏ ($\approx 5.45 \times 10^{-9}$).
+  * **Giải thích vì sao bài toán có vô số nghiệm:**
+    * *Về đại số tuyến tính:* Phương trình (4) chính là tổ hợp tuyến tính $\text{PT}(4) = \text{PT}(1) - \text{PT}(3) + \text{PT}(2)$. Hệ thực chất chỉ có 3 phương trình độc lập nhưng có tới 4 ẩn số ($4 > 3$), dẫn đến hệ có 1 bậc tự do và vô số nghiệm theo dạng $(7 - t, 2 + t, 1 + t, t)$.
+    * *Về mặt tối ưu hóa:* Đáy của hàm mất mát ($\mathcal{L} = 0$) là một đường thẳng liên tục trong không gian 4 chiều $\mathbb{R}^4$. Các trọng số khởi tạo ngẫu nhiên khác nhau sẽ dẫn thuật toán Gradient Descent trượt về các điểm nghiệm khác nhau dọc theo đường thẳng này.
+
+* **Bài 11: Thực hành tổng hợp Tensor, Autograd & Khôi phục đa thức bậc 2**
+  * **Thao tác Reshape Tensor (YC 1):**
+    * Khởi tạo Tensor $X$ có 24 phần tử (`torch.arange(24)`).
+    * Reshape lần lượt thành các kích thước: $4 \times 6$, $2 \times 12$ và $2 \times 3 \times 4$ dựa trên nguyên tắc tích các chiều bằng 24.
+  * **Các phép toán và hàm thống kê trên Tensor 3 x 4 (YC 2):**
+    * Khởi tạo hai Tensor $A, B$ kích thước $3 \times 4$.
+    * Thực hiện phép cộng $A + B$, nhân từng phần tử $A * B$ (Element-wise), chia từng phần tử $A / B$.
+    * Tính trung bình theo cột (`torch.mean(A, dim=0)`) và độ lệch chuẩn theo cột (`torch.std(A, dim=0)`).
+  * **Tính đạo hàm với Autograd & Kiểm chứng thủ công (YC 3):**
+    * Cho hàm số $y = 2x^2 + 5x + 3$, tính đạo hàm tại $x = 2$.
+    * Autograd: `y.backward()` cho kết quả `x.grad = 13.0`.
+    * Giải tích: $y' = 4x + 5 \implies y'(2) = 4(2) + 5 = 13$. Kết quả hai cách tính hoàn toàn trùng khớp.
+  * **Khôi phục hệ số đa thức $y = 2x^2 - 3x + 5$ bằng Gradient Descent (YC 4):**
+    * Tạo dữ liệu mẫu và tối ưu hóa ma trận trọng số $w = [w_1, w_2, w_3]^T$ qua 2000 epochs với thuật toán NAdam.
+    * Kết quả hội tụ: $w_1 \approx 2.0020$ (tiệm cận 2), $w_2 \approx -2.9991$ (tiệm cận -3), $w_3 \approx 4.8922$ (tiệm cận 5), khôi phục thành công đa thức gốc.
+
 ---
 
 ## 📁 Cấu trúc dự án
@@ -70,10 +98,11 @@ Kho lưu trữ (repository) này dùng để ghi lại toàn bộ quá trình h�
 ```text
 deeplearning_personal/
 ├── README.md        # Nhật ký làm việc, ghi chú tiến độ và kiến thức
-└── lab02.ipynb      # Notebook thực hành các bài tập Lab 02 (Bài 1 -> Bài 9)
+└── lab02.ipynb      # Notebook thực hành các bài tập Lab 02 (Bài 1 -> Bài 11)
 ```
 
 ## 🛠️ Môi trường & Thư viện
 * **Python**: 3.10+ (khuyên dùng)
 * **PyTorch**: `torch`
 * **NumPy**: `numpy`
+
